@@ -1,10 +1,12 @@
 import java.util.ArrayList;
 
 public class Photo {   
+
     private ArrayList<String> tags;
     private String orientation;
     // orientation -> String chosen for readability
 
+    // Constructor
     public Photo(ArrayList<String> tags, String orientation) {
         this.tags = new ArrayList<>(tags);
         this.orientation = orientation;
@@ -22,5 +24,8 @@ public class Photo {
         };
         this.orientation = newOrientation;
     };
+    public void setTags(ArrayList<String> newTags) {
+        this.tags = newTags;
+    }
 
 };
