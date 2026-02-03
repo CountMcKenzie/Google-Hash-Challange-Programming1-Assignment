@@ -1,9 +1,10 @@
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Photo {   
 
     private ArrayList<String> tags;
-    private double weight;
+    private double importance;
     private String orientation;
     // orientation -> String chosen for readability
 
@@ -11,7 +12,7 @@ public class Photo {
     public Photo(ArrayList<String> tags, String orientation) {
         this.tags = new ArrayList<>(tags);
         this.orientation = orientation;
-        this.weight = 0;
+        this.importance = 0;
 
         // Ensures tag count is updated
         Util.countTags(tags);
@@ -20,7 +21,7 @@ public class Photo {
     // Getters
     public String getOrientation() { return orientation; };
     public ArrayList<String> getTags() { return tags; };
-    public double getWeight() { return weight; };
+    public double getImportance() { return importance; };
 
     // Setters
     public void setOrientation(String newOrientation) {
@@ -40,8 +41,25 @@ public class Photo {
     // Methods
     public void weighPhotos() {
         for (String tag : this.tags) {
-            this.weight += Util.getTagWeights().get(tag);
+            this.importance += Util.getTagWeights().get(tag);
         }
+    }
+
+    public int sharedTags(Photo photo2) {
+        int count = 0;
+
+        HashSet<String> set1 = new HashSet<>(this.tags);
+        HashSet<String> set2 = new HashSet<>(photo2.tags);
+
+        HashSet<String> smaller = set1.size() < set2.size() ? set1 : set2;
+        HashSet<String> larger = (smaller == set1) ? set2 : set1;
+
+        for (String tag : smaller) {
+            if (larger.contains(tag)) {
+                count += 1;
+            }
+        }
+        return count;
     }
 
 };
