@@ -19,7 +19,7 @@ public class Util {
         weighValues();
     }
 
-
+    // Methods
     public static void countTags(ArrayList<String> tags) {
         // simply counts frequency of each tag and adds it to a hashmap where key is tag and value is frequency
         for(String tag : tags) {
@@ -35,5 +35,39 @@ public class Util {
         }
 
     };
+
+public static ArrayList<Photo> optimizePhotoArray(ArrayList<Photo> photos) {
+
+    for (int i = 0; i < photos.size() - 1; i++) {
+
+        int lookDepth = 200;
+        Photo current = photos.get(i);
+        int bestScore = -1;
+        int bestIndex = -1;
+
+        for (int j = i + 1; j < Math.min(i+lookDepth, photos.size()); j++) {
+            Photo nextCandidate = photos.get(j);
+            int shared = current.countSharedTags(nextCandidate);
+            
+            int score = Math.min(shared, 
+                        Math.min(current.getTags().size() - shared, nextCandidate.getTags().size() - shared));
+
+            if (score > bestScore) {
+                bestScore = score;
+                bestIndex = j;
+            }
+            
+            if (bestScore >= current.getTags().size() / 2) { break; }
+        }
+
+        // Swap the best candidate into the next position
+        if (bestIndex != -1) {
+            Photo temp = photos.get(i + 1);
+            photos.set(i + 1, photos.get(bestIndex));
+            photos.set(bestIndex, temp);
+        }
+    }
+    return photos;
+}
 
 }

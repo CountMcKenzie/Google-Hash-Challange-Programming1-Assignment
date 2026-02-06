@@ -26,8 +26,8 @@ public class Photo {
     // Setters
     public void setOrientation(String newOrientation) {
         newOrientation = newOrientation.toLowerCase().trim();
-        if (!newOrientation.equals("h") && !newOrientation.equals("w")) {
-            System.out.println("Could not update orientation value - Use values h or w");
+        if (!newOrientation.equals("h") && !newOrientation.equals("v") && !newOrientation.equals("vv")) {
+            System.out.println("Could not update orientation value - Use values h, v or vv");
             return;
         };
         this.orientation = newOrientation;
@@ -43,9 +43,10 @@ public class Photo {
         for (String tag : this.tags) {
             this.importance += Util.getTagWeights().get(tag);
         }
+        this.importance /= this.getTags().size();
     }
 
-    public int sharedTags(Photo photo2) {
+    public int countSharedTags(Photo photo2) {
         int count = 0;
 
         HashSet<String> set1 = new HashSet<>(this.tags);

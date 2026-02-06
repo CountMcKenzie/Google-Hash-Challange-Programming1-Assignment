@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Scanner;
 
 public class Main {
@@ -9,10 +8,8 @@ public class Main {
     public static void main(String args[]) {
 
         // Loading photos
-        ArrayList<Photo> photos = loadPhotos("a_example.txt");
-        initializePhotoData(photos);
-
-        //photos = sortPhotosByImportance(photos);
+        ArrayList<Photo> photos = loadPhotos("d_pet_pictures.txt");
+        photos = initializePhotoData(photos);
 
         // Counting Score
         int score = 0;
@@ -20,27 +17,31 @@ public class Main {
             Photo current = photos.get(i);
             Photo next = photos.get(i + 1);
 
-            int shared = current.sharedTags(next);
 
-            int photo1Size = current.getTags().size() - shared;
-            int photo2Size = next.getTags().size() - shared;
+            int shared = current.countSharedTags(next);
+
+            int photo1Points = current.getTags().size() - shared;
+            int photo2Points = next.getTags().size() - shared;
             
-            score += Math.min(shared, Math.min(photo1Size, photo2Size));
+            score += Math.min(shared, Math.min(photo1Points, photo2Points));
         }
-        System.out.println("final score: "+score);
+        System.out.println("final score: " + score);
         
     }
 
-    public static void initializePhotoData(ArrayList<Photo> photos) {
+    public static ArrayList<Photo> initializePhotoData(ArrayList<Photo> photos) {
         Util.setTagWeights();
         for (Photo photo : photos) {
             photo.weighPhotos();
         }
+        sortPhotosByImportance(photos);
+        photos = Util.optimizePhotoArray(photos);
+        return photos;
     }
 
     public static ArrayList<Photo> sortPhotosByImportance(ArrayList<Photo> photos) {
-        photos.sort((p1, p2) ->
-            Double.compare(p2.getImportance(), p1.getImportance())
+        photos.sort((photo1, photo2) ->
+            Double.compare(photo1.getImportance(), photo2.getImportance())
         );
         return photos;
     }
