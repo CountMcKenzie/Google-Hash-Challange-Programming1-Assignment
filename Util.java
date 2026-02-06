@@ -43,7 +43,7 @@ public class Util {
 
         for (int i = 0; i < photos.size() - 1; i++) {
 
-            int lookDepth = 5000;
+            int lookDepth = 700;
             Photo current = photos.get(i);
             int bestScore = -1;
             int bestIndex = -1;
