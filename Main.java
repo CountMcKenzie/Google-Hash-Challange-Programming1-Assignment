@@ -11,6 +11,10 @@ public class Main {
         ArrayList<Photo> photos = loadPhotos("d_pet_pictures.txt");
         photos = initializePhotoData(photos);
 
+        for (Photo photo: photos) {
+            System.out.println(photo.getOrientation());
+        }
+
         // Counting Score
         int score = 0;
         for (int i = 0; i < photos.size() - 1; i++) {
@@ -34,6 +38,9 @@ public class Main {
         for (Photo photo : photos) {
             photo.weighPhotos();
         }
+        sortPhotosByImportance(photos);
+        photos = Photo.mergeVPhotos(photos);
+
         sortPhotosByImportance(photos);
         photos = Util.optimizePhotoArray(photos);
         return photos;

@@ -19,22 +19,26 @@ public class Photo {
     }
 
     // Getters
-    public String getOrientation() { return orientation; };
-    public ArrayList<String> getTags() { return tags; };
-    public double getImportance() { return importance; };
+    public String getOrientation() { return this.orientation; };
+    public ArrayList<String> getTags() { return this.tags; };
+    public double getImportance() { return this.importance; };
 
     // Setters
     public void setOrientation(String newOrientation) {
         newOrientation = newOrientation.toLowerCase().trim();
-        if (!newOrientation.equals("h") && !newOrientation.equals("v") && !newOrientation.equals("vv")) {
-            System.out.println("Could not update orientation value - Use values h, v or vv");
+        if (!newOrientation.equals("H") && !newOrientation.equals("V") && !newOrientation.equals("VV")) {
+            System.out.println("Could not update orientation value - Use values H, V or VV");
             return;
         };
         this.orientation = newOrientation;
     };
     public void setTags(ArrayList<String> newTags) {
         if (newTags != null) {
-            this.tags = new ArrayList<>(newTags); 
+            for (String tag : newTags) {
+                if (!this.tags.contains(tag)) {
+                    this.tags.add(tag);
+                };
+            }
         }
     }
 
@@ -63,4 +67,45 @@ public class Photo {
         return count;
     }
 
+    public static ArrayList<Photo> mergeVPhotos(ArrayList<Photo> photos) {
+        int lIndex = 0;
+        int rIndex = photos.size()-1;
+
+        for (int i=0; i < photos.size(); i++) {
+
+            if (lIndex >= rIndex) {
+                break;
+            }
+
+            if (photos.get(lIndex).getOrientation().equals(photos.get(rIndex).getOrientation())) {
+                Photo newVVPhoto = new Photo(photos.get(i).getTags(), "VV");
+                newVVPhoto.setTags(photos.get(rIndex).getTags());
+
+                photos.set(lIndex, newVVPhoto);
+
+                photos.remove(rIndex);
+                lIndex+= 1;
+                rIndex-= 1;
+
+                continue;
+            }
+            if (photos.get(lIndex).orientation.equals("V")) {
+                rIndex--;
+                continue;
+            }
+            if (photos.get(rIndex).orientation.equals("V")) {
+                lIndex++;
+                continue;
+            }
+        }
+        for(int i = 0; i < photos.size() - 1; i++) {
+            if (photos.get(i).orientation.equals("V")) {
+                photos.remove(i);
+                break;
+            }
+        }
+
+        return photos;
+
+    }
 };
