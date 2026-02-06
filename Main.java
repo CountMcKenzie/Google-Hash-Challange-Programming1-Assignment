@@ -49,14 +49,14 @@ public class Main {
 
     public static ArrayList<Photo> initializePhotoData(ArrayList<Photo> photos) {
         // wrapper for external methods
-        
+
         Util.setTagWeights();
         for (Photo photo : photos) {
             photo.weighPhotos();
         }
 
         photos = Photo.mergeVPhotos(photos);
-        photos = Util.optimizePhotoArray(photos);
+        photos = Util.pairOptimalPhotos(photos, 700);
         return photos;
     }
 

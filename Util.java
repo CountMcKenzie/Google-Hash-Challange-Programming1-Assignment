@@ -36,14 +36,13 @@ public class Util {
 
     };
 
-    public static ArrayList<Photo> optimizePhotoArray(ArrayList<Photo> photos) {
+    public static ArrayList<Photo> pairOptimalPhotos(ArrayList<Photo> photos, int lookDepth) {
         // greedy look ahead algorithm
 
         sortPhotosByImportance(photos);
 
         for (int i = 0; i < photos.size() - 1; i++) {
 
-            int lookDepth = 5000;
             Photo current = photos.get(i);
             int bestScore = -1;
             int bestIndex = -1;
@@ -53,7 +52,8 @@ public class Util {
                 int shared = current.countSharedTags(nextCandidate);
                 
                 int score = Math.min(shared, 
-                            Math.min(current.getTags().size() - shared, nextCandidate.getTags().size() - shared));
+                            Math.min(current.getTags().size() - shared, 
+                            nextCandidate.getTags().size() - shared));
 
                 if (score > bestScore) {
                     bestScore = score;
@@ -72,6 +72,7 @@ public class Util {
         }
         return photos;
     }
+    
     public static ArrayList<Photo> sortPhotosByImportance(ArrayList<Photo> photos) {
         // Easy to implement O(n log(n)) sort
         photos.sort((photo1, photo2) ->

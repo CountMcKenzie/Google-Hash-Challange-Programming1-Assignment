@@ -32,7 +32,7 @@ public class Photo {
         };
         this.orientation = newOrientation;
     };
-    public void setTags(ArrayList<String> newTags) {
+    public Photo setTags(ArrayList<String> newTags) {
         if (newTags != null) {
             for (String tag : newTags) {
                 if (!this.tags.contains(tag)) {
@@ -40,6 +40,7 @@ public class Photo {
                 };
             }
         }
+        return this;
     }
 
     // Methods
@@ -69,45 +70,37 @@ public class Photo {
 
     public static ArrayList<Photo> mergeVPhotos(ArrayList<Photo> photos) {
         // Pairs Vertical photos of high importance with photos of low importance
-        int lIndex = 0;
-        int rIndex = photos.size()-1;
+
+        ArrayList<Photo> vPhotoArray = new ArrayList<>();
+        
+        for (Photo photo : photos) {
+            if (photo.orientation == "V") {
+                vPhotoArray.add(photo);
+                photos.remove(photo);
+            }
+        }
+
+        vPhotoArray = Util.pairOptimalPhotos(vPhotoArray, 1300);
+
+        Photo mergedVPhoto;
+
+        for (int i = 0; i < vPhotoArray.size(); i++) {
+            if (i % 2 == 0 && i+1 != vPhotoArray.size()) {
+
+                Photo vPhoto1 = vPhotoArray.get(i);
+                Photo vPhoto2 = vPhotoArray.get(i+1);
+
+                mergedVPhoto = vPhoto1.setTags(vPhoto2.getTags());
+                mergedVPhoto.orientation = "VV";
+
+                photos.add(mergedVPhoto);
+
+            }
+        }
+
         Util.sortPhotosByImportance(photos);
-
-        for (int i=0; i < photos.size(); i++) {
-
-            if (lIndex >= rIndex) {
-                break;
-            }
-
-            if (photos.get(lIndex).getOrientation().equals(photos.get(rIndex).getOrientation())) {
-                Photo newVVPhoto = new Photo(photos.get(i).getTags(), "VV");
-                newVVPhoto.setTags(photos.get(rIndex).getTags());
-
-                photos.set(lIndex, newVVPhoto);
-
-                photos.remove(rIndex);
-                lIndex+= 1;
-                rIndex-= 1;
-
-                continue;
-            }
-            if (photos.get(lIndex).orientation.equals("V")) {
-                rIndex--;
-                continue;
-            }
-            if (photos.get(rIndex).orientation.equals("V")) {
-                lIndex++;
-                continue;
-            }
-        }
-        for(int i = 0; i < photos.size() - 1; i++) {
-            if (photos.get(i).orientation.equals("V")) {
-                photos.remove(i);
-                break;
-            }
-        }
-
+        
         return photos;
 
     }
-};
+}
