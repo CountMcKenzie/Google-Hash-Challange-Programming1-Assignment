@@ -5,13 +5,31 @@ import java.util.Scanner;
 
 public class Main {
 
+    public static int finalScore = 0;
+
     public static void main(String args[]) {
 
         // Loading photos
-        ArrayList<Photo> photos = loadPhotos("d_pet_pictures.txt");
+        ArrayList<Photo> photos = loadPhotos("a_example.txt");
+        finalScore += countScore(photos);
+        photos = loadPhotos("b_lovely_landscapes.txt");
+        finalScore += countScore(photos);
+        photos = loadPhotos("c_memorable_moments.txt");
+        finalScore += countScore(photos);
+        photos = loadPhotos("d_pet_pictures.txt");
+        finalScore += countScore(photos);
+        photos = loadPhotos("e_shiny_selfies.txt");
+        finalScore += countScore(photos);
+
+        System.out.println("Final Score: "+ finalScore);
+        
+    }
+
+    public static int countScore( ArrayList<Photo> photos) {
+        // counts score per hash code challenge formula
+
         photos = initializePhotoData(photos);
 
-        // Counting Score
         int score = 0;
         for (int i = 0; i < photos.size() - 1; i++) {
             Photo current = photos.get(i);
@@ -25,11 +43,13 @@ public class Main {
             
             score += Math.min(shared, Math.min(photo1Points, photo2Points));
         }
-        System.out.println("final score: " + score);
-        
+        System.out.println("score: " + score);
+        return score;
     }
 
     public static ArrayList<Photo> initializePhotoData(ArrayList<Photo> photos) {
+        // wrapper for external methods
+        
         Util.setTagWeights();
         for (Photo photo : photos) {
             photo.weighPhotos();
@@ -37,14 +57,6 @@ public class Main {
 
         photos = Photo.mergeVPhotos(photos);
         photos = Util.optimizePhotoArray(photos);
-        return photos;
-    }
-
-    public static ArrayList<Photo> sortPhotosByImportance(ArrayList<Photo> photos) {
-        // Easy to implement O(n log(n)) sort
-        photos.sort((photo1, photo2) ->
-            Double.compare(photo1.getImportance(), photo2.getImportance())
-        );
         return photos;
     }
 

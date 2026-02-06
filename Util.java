@@ -39,11 +39,11 @@ public class Util {
     public static ArrayList<Photo> optimizePhotoArray(ArrayList<Photo> photos) {
         // greedy look ahead algorithm
 
-        Main.sortPhotosByImportance(photos);
+        sortPhotosByImportance(photos);
 
         for (int i = 0; i < photos.size() - 1; i++) {
 
-            int lookDepth = 200;
+            int lookDepth = 5000;
             Photo current = photos.get(i);
             int bestScore = -1;
             int bestIndex = -1;
@@ -70,6 +70,13 @@ public class Util {
                 photos.set(bestIndex, temp);
             }
         }
+        return photos;
+    }
+    public static ArrayList<Photo> sortPhotosByImportance(ArrayList<Photo> photos) {
+        // Easy to implement O(n log(n)) sort
+        photos.sort((photo1, photo2) ->
+            Double.compare(photo1.getImportance(), photo2.getImportance())
+        );
         return photos;
     }
 

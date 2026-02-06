@@ -71,7 +71,7 @@ public class Photo {
         // Pairs Vertical photos of high importance with photos of low importance
         int lIndex = 0;
         int rIndex = photos.size()-1;
-        Main.sortPhotosByImportance(photos);
+        Util.sortPhotosByImportance(photos);
 
         for (int i=0; i < photos.size(); i++) {
 
