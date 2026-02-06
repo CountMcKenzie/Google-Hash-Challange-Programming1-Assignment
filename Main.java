@@ -21,7 +21,7 @@ public class Main {
         photos = loadPhotos("e_shiny_selfies.txt");
         finalScore += countScore(photos);
 
-        System.out.println("Final Score: "+ finalScore);
+        System.out.println("Final Score: " + finalScore);
         
     }
 

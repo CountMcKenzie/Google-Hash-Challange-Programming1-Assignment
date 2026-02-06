@@ -32,7 +32,7 @@ public class Photo {
         };
         this.orientation = newOrientation;
     };
-    public Photo setTags(ArrayList<String> newTags) {
+    public Photo concatenateTags(ArrayList<String> newTags) {
         if (newTags != null) {
             for (String tag : newTags) {
                 if (!this.tags.contains(tag)) {
@@ -90,7 +90,7 @@ public class Photo {
                 Photo vPhoto1 = vPhotoArray.get(i);
                 Photo vPhoto2 = vPhotoArray.get(i+1);
 
-                mergedVPhoto = vPhoto1.setTags(vPhoto2.getTags());
+                mergedVPhoto = vPhoto1.concatenateTags(vPhoto2.getTags());
                 mergedVPhoto.orientation = "VV";
 
                 photos.add(mergedVPhoto);
