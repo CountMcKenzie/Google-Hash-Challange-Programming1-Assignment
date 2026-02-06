@@ -37,6 +37,9 @@ public class Util {
     };
 
     public static ArrayList<Photo> optimizePhotoArray(ArrayList<Photo> photos) {
+        // greedy look ahead algorithm
+
+        Main.sortPhotosByImportance(photos);
 
         for (int i = 0; i < photos.size() - 1; i++) {
 
