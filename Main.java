@@ -56,7 +56,7 @@ public class Main {
         }
 
         photos = Photo.mergeVPhotos(photos);
-        photos = Util.pairOptimalPhotos(photos, 700);
+        photos = Util.pairOptimalPhotos(photos, 800);
         return photos;
     }
 

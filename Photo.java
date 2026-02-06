@@ -6,15 +6,12 @@ public class Photo {
     private ArrayList<String> tags;
     private double importance;
     private String orientation;
-    // orientation -> String chosen for readability
 
     // Constructor
     public Photo(ArrayList<String> tags, String orientation) {
         this.tags = new ArrayList<>(tags);
         this.orientation = orientation;
         this.importance = 0;
-
-        // Ensures tag count is updated
         Util.countTags(tags);
     }
 
@@ -25,13 +22,25 @@ public class Photo {
 
     // Setters
     public void setOrientation(String newOrientation) {
-        newOrientation = newOrientation.toLowerCase().trim();
+        newOrientation = newOrientation.toUpperCase().trim();
         if (!newOrientation.equals("H") && !newOrientation.equals("V") && !newOrientation.equals("VV")) {
             System.out.println("Could not update orientation value - Use values H, V or VV");
             return;
         };
         this.orientation = newOrientation;
     };
+    
+    public Photo setTags(ArrayList<String> newTags) {
+        if (newTags != null) {
+            for (String tag : newTags) {
+                if (!this.tags.contains(tag)) {
+                    this.tags.add(tag);
+                };
+            }
+        }
+        return this;
+    }
+    
     public Photo concatenateTags(ArrayList<String> newTags) {
         if (newTags != null) {
             for (String tag : newTags) {
@@ -70,37 +79,39 @@ public class Photo {
 
     public static ArrayList<Photo> mergeVPhotos(ArrayList<Photo> photos) {
         // Pairs Vertical photos of high importance with photos of low importance
-
         ArrayList<Photo> vPhotoArray = new ArrayList<>();
+        ArrayList<Photo> nonVPhotos = new ArrayList<>();
         
+        // Separate V photos from non-V photos
         for (Photo photo : photos) {
-            if (photo.orientation == "V") {
+            if (photo.orientation.equals("V")) {
                 vPhotoArray.add(photo);
-                photos.remove(photo);
+            } else {
+                nonVPhotos.add(photo);
             }
         }
-
-        vPhotoArray = Util.pairOptimalPhotos(vPhotoArray, 1300);
-
-        Photo mergedVPhoto;
-
-        for (int i = 0; i < vPhotoArray.size(); i++) {
-            if (i % 2 == 0 && i+1 != vPhotoArray.size()) {
-
-                Photo vPhoto1 = vPhotoArray.get(i);
-                Photo vPhoto2 = vPhotoArray.get(i+1);
-
-                mergedVPhoto = vPhoto1.concatenateTags(vPhoto2.getTags());
-                mergedVPhoto.orientation = "VV";
-
-                photos.add(mergedVPhoto);
-
-            }
-        }
-
-        Util.sortPhotosByImportance(photos);
         
-        return photos;
-
+        vPhotoArray = Util.pairOptimalPhotos(vPhotoArray, 800);
+        
+        Photo mergedVPhoto;
+        for (int i = 0; i < vPhotoArray.size() - 1; i += 2) {
+            Photo vPhoto1 = vPhotoArray.get(i);
+            Photo vPhoto2 = vPhotoArray.get(i + 1);
+            
+            mergedVPhoto = vPhoto1.concatenateTags(vPhoto2.getTags());
+            mergedVPhoto.orientation = "VV";
+            nonVPhotos.add(mergedVPhoto);
+        }
+        
+        // Handle leftover odd V photo if any
+        if (vPhotoArray.size() % 2 == 1) {
+            Photo leftoverV = vPhotoArray.get(vPhotoArray.size() - 1);
+            System.out.println("Warning: Odd V photo left unpaired, keeping as V");
+            nonVPhotos.add(leftoverV);
+        }
+        
+        Util.sortPhotosByImportance(nonVPhotos);
+        
+        return nonVPhotos;
     }
 }
