@@ -36,14 +36,13 @@ public class Util {
 
     };
 
-    public static ArrayList<Photo> optimizePhotoArray(ArrayList<Photo> photos) {
+    public static ArrayList<Photo> pairRelevantPhotos(ArrayList<Photo> photos, int lookDepth) {
         // greedy look ahead algorithm
 
         sortPhotosByImportance(photos);
 
         for (int i = 0; i < photos.size() - 1; i++) {
 
-            int lookDepth = 700;
             Photo current = photos.get(i);
             int bestScore = -1;
             int bestIndex = -1;

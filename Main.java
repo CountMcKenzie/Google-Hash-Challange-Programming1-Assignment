@@ -35,7 +35,6 @@ public class Main {
             Photo current = photos.get(i);
             Photo next = photos.get(i + 1);
 
-
             int shared = current.countSharedTags(next);
 
             int photo1Points = current.getTags().size() - shared;
@@ -51,12 +50,14 @@ public class Main {
         // wrapper for external methods
         
         Util.setTagWeights();
+
         for (Photo photo : photos) {
-            photo.weighPhotos();
+            photo.sumPhotoImportance();
         }
 
         photos = Photo.mergeVPhotos(photos);
-        photos = Util.optimizePhotoArray(photos);
+        photos = Util.pairRelevantPhotos(photos, 5000);
+
         return photos;
     }
 

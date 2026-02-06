@@ -32,7 +32,9 @@ public class Photo {
         };
         this.orientation = newOrientation;
     };
-    public void setTags(ArrayList<String> newTags) {
+    
+    // Methods
+    public void concatenateTags(ArrayList<String> newTags) {
         if (newTags != null) {
             for (String tag : newTags) {
                 if (!this.tags.contains(tag)) {
@@ -42,8 +44,7 @@ public class Photo {
         }
     }
 
-    // Methods
-    public void weighPhotos() {
+    public void sumPhotoImportance() {
         for (String tag : this.tags) {
             this.importance += Util.getTagWeights().get(tag);
         }
@@ -81,7 +82,7 @@ public class Photo {
 
             if (photos.get(lIndex).getOrientation().equals(photos.get(rIndex).getOrientation())) {
                 Photo newVVPhoto = new Photo(photos.get(i).getTags(), "VV");
-                newVVPhoto.setTags(photos.get(rIndex).getTags());
+                newVVPhoto.concatenateTags(photos.get(rIndex).getTags());
 
                 photos.set(lIndex, newVVPhoto);
 
