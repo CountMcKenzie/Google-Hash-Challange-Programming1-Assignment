@@ -80,7 +80,9 @@ public class Photo {
                 break;
             }
 
-            if (photos.get(lIndex).getOrientation().equals(photos.get(rIndex).getOrientation())) {
+            if (photos.get(lIndex).getOrientation().equals(photos.get(rIndex).getOrientation()) 
+                && photos.get(lIndex).orientation.equals("V")) {
+                
                 Photo newVVPhoto = new Photo(photos.get(i).getTags(), "VV");
                 newVVPhoto.concatenateTags(photos.get(rIndex).getTags());
 

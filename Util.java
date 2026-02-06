@@ -22,44 +22,47 @@ public class Util {
     // Methods
     public static void countTags(ArrayList<String> tags) {
         // simply counts frequency of each tag and adds it to a hashmap where key is tag and value is frequency
-        for(String tag : tags) {
+        for (String tag : tags) {
             tagFrequencies.put(tag, tagFrequencies.getOrDefault(tag, 0.0) + 1);
         };
     };
     
     private static void weighValues() {
         // must be invoked from the setter method for tagWeights
-
+        int totalTags = tagFrequencies.size();
         for (String tag : tagFrequencies.keySet()) {
-            tagWeights.put(tag, Math.log(tagFrequencies.get(tag)/(double) tagFrequencies.size())*-1);
+            tagWeights.put(tag, Math.log(tagFrequencies.get(tag) / (double) totalTags) * -1);
         }
-
     };
 
     public static ArrayList<Photo> pairRelevantPhotos(ArrayList<Photo> photos, int lookDepth) {
         // greedy look ahead algorithm
-
         sortPhotosByImportance(photos);
 
         for (int i = 0; i < photos.size() - 1; i++) {
-
             Photo current = photos.get(i);
+            int currentTagSize = current.getTags().size();
+            int earlyExitThreshold = currentTagSize / 2;
+            int searchLimit = Math.min(i + lookDepth, photos.size());
+            
             int bestScore = -1;
             int bestIndex = -1;
 
-            for (int j = i + 1; j < Math.min(i+lookDepth, photos.size()); j++) {
+            for (int j = i + 1; j < searchLimit; j++) {
                 Photo nextCandidate = photos.get(j);
+                int nextTagSize = nextCandidate.getTags().size();
                 int shared = current.countSharedTags(nextCandidate);
                 
                 int score = Math.min(shared, 
-                            Math.min(current.getTags().size() - shared, nextCandidate.getTags().size() - shared));
+                            Math.min(currentTagSize - shared, 
+                            nextTagSize - shared));
 
                 if (score > bestScore) {
                     bestScore = score;
                     bestIndex = j;
                 }
                 
-                if (bestScore >= current.getTags().size() / 2) { break; }
+                if (bestScore >= earlyExitThreshold) { break; }
             }
 
             // Swap the best candidate into the next position
@@ -71,6 +74,7 @@ public class Util {
         }
         return photos;
     }
+    
     public static ArrayList<Photo> sortPhotosByImportance(ArrayList<Photo> photos) {
         // Easy to implement O(n log(n)) sort
         photos.sort((photo1, photo2) ->
