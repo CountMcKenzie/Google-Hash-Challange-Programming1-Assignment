@@ -14,24 +14,25 @@ public class Util {
         return tagFrequencies;
     }
 
-    // Setters
-    public static void setTagWeights() {
-        weighValues();
-    }
 
     // Methods
-    public static void countTags(ArrayList<String> tags) {
+    public static void countTags(ArrayList<String> tags, boolean flush) {
         // simply counts frequency of each tag and adds it to a hashmap where key is tag and value is frequency
+        if (flush) { 
+            tagFrequencies.clear(); 
+            tagWeights.clear();
+            return;
+        };
         for (String tag : tags) {
             tagFrequencies.put(tag, tagFrequencies.getOrDefault(tag, 0.0) + 1);
         };
     };
     
-    private static void weighValues() {
-        // must be invoked from the setter method for tagWeights
+    public static void setTagWeights() {
+
         int totalTags = tagFrequencies.size();
         for (String tag : tagFrequencies.keySet()) {
-            tagWeights.put(tag, Math.log(tagFrequencies.get(tag) / (double) totalTags) * -1);
+            tagWeights.put(tag, Math.log(tagFrequencies.get(tag) / (double) totalTags) *-1);
         }
     };
 

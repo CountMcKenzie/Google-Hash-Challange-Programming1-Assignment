@@ -15,7 +15,7 @@ public class Photo {
         this.importance = 0;
 
         // Ensures tag count is updated
-        Util.countTags(tags);
+        Util.countTags(tags, false);
     }
 
     // Getters
@@ -32,9 +32,13 @@ public class Photo {
         };
         this.orientation = newOrientation;
     };
-    
+    public void setTags(ArrayList<String> newTags) {
+        if (newTags != null) { this.tags = newTags; }
+    }
+
     // Methods
     public void concatenateTags(ArrayList<String> newTags) {
+        // merges 2 photos sets of tags - for use with merging V photos
         if (newTags != null) {
             for (String tag : newTags) {
                 if (!this.tags.contains(tag)) {
@@ -48,10 +52,10 @@ public class Photo {
         for (String tag : this.tags) {
             this.importance += Util.getTagWeights().get(tag);
         }
-        this.importance /= this.getTags().size();
     }
 
     public int countSharedTags(Photo photo2) {
+        // returns the amount of tags that are shared between 2 photos
         int count = 0;
 
         HashSet<String> set1 = new HashSet<>(this.tags);
@@ -70,6 +74,7 @@ public class Photo {
 
     public static ArrayList<Photo> mergeVPhotos(ArrayList<Photo> photos) {
         // Pairs Vertical photos of high importance with photos of low importance
+        
         int lIndex = 0;
         int rIndex = photos.size()-1;
         Util.sortPhotosByImportance(photos);
@@ -83,7 +88,7 @@ public class Photo {
             if (photos.get(lIndex).getOrientation().equals(photos.get(rIndex).getOrientation()) 
                 && photos.get(lIndex).orientation.equals("V")) {
                 
-                Photo newVVPhoto = new Photo(photos.get(i).getTags(), "VV");
+                Photo newVVPhoto = new Photo(photos.get(lIndex).getTags(), "VV");
                 newVVPhoto.concatenateTags(photos.get(rIndex).getTags());
 
                 photos.set(lIndex, newVVPhoto);
@@ -94,6 +99,7 @@ public class Photo {
 
                 continue;
             }
+
             if (photos.get(lIndex).orientation.equals("V")) {
                 rIndex--;
                 continue;
