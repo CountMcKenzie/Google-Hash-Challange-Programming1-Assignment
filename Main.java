@@ -40,8 +40,9 @@ public class Main {
             
             score += Math.min(shared, Math.min(photo1Points, photo2Points));
         }
-        Util.countTags(new ArrayList<>(), true);
+
         // reset tag hashmap
+        Util.countTags(new ArrayList<>(), true);
 
         System.out.println("score: " + score);
         return score;
@@ -56,10 +57,9 @@ public class Main {
             // assigns each photo its importance value
             photo.sumPhotoImportance();
         }
-
+        
         photos = Photo.mergeVPhotos(photos);
-
-        photos = Util.pairRelevantPhotos(photos,500);
+        photos = Util.pairRelevantPhotos(photos,1000);
 
         return photos;
     }
@@ -79,7 +79,7 @@ public class Main {
                     
                     photos = new ArrayList<>(totalPhotos); 
                 } else {
-                    // Return if empty list / if file is empty
+                    // Return if empty list if file is empty
                     return; 
                 }
 
@@ -95,7 +95,6 @@ public class Main {
                     for (int i = 2; i < parts.length; i++) {
                         tags.add(parts[i]);
                     }
-
                     photos.add(new Photo(tags, orientation));
                 }
             } catch (FileNotFoundException e) {

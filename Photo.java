@@ -78,6 +78,9 @@ public class Photo {
         int lIndex = 0;
         int rIndex = photos.size()-1;
         Util.sortPhotosByImportance(photos);
+        photos = Util.pairRelevantPhotos(photos, 100);
+
+        ArrayList<Photo> sortedPhotos = new ArrayList<>();
 
         for (int i=0; i < photos.size(); i++) {
 
@@ -91,32 +94,24 @@ public class Photo {
                 Photo newVVPhoto = new Photo(photos.get(lIndex).getTags(), "VV");
                 newVVPhoto.concatenateTags(photos.get(rIndex).getTags());
 
-                photos.set(lIndex, newVVPhoto);
+                sortedPhotos.add(newVVPhoto);
 
-                photos.remove(rIndex);
-                lIndex+= 1;
-                rIndex-= 1;
-
-                continue;
-            }
-
-            if (photos.get(lIndex).orientation.equals("V")) {
-                rIndex--;
-                continue;
-            }
-            if (photos.get(rIndex).orientation.equals("V")) {
                 lIndex++;
+                rIndex--;
+
                 continue;
             }
-        }
-        for(int i = 0; i < photos.size() - 1; i++) {
-            if (photos.get(i).orientation.equals("V")) {
-                photos.remove(i);
-                break;
+
+            if (photos.get(lIndex).orientation.equals("H")) {
+                sortedPhotos.add(photos.get(lIndex));
+                lIndex++;
+            }
+            if (photos.get(rIndex).orientation.equals("H")) {
+                sortedPhotos.add(photos.get(rIndex));
+                rIndex--;
             }
         }
-
-        return photos;
+        return sortedPhotos;
 
     }
 };

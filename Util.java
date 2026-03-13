@@ -75,6 +75,8 @@ public class Util {
         }
         return photos;
     }
+
+    
     
     public static ArrayList<Photo> sortPhotosByImportance(ArrayList<Photo> photos) {
         // Easy to implement O(n log(n)) sort
