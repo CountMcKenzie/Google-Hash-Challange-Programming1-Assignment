@@ -3,24 +3,26 @@ import java.util.HashSet;
 
 public class Photo {   
 
-    private ArrayList<String> tags;
+    private HashSet<String> tags;
     private double importance;
     private String orientation;
     // orientation -> String chosen for readability
 
     // Constructor
-    public Photo(ArrayList<String> tags, String orientation) {
-        this.tags = new ArrayList<>(tags);
+    public Photo(ArrayList<String> tags, String orientation, boolean isNewFromFile) {
+        this.tags = new HashSet<>(tags);
         this.orientation = orientation;
         this.importance = 0;
 
-        // Ensures tag count is updated
-        Util.countTags(tags, false);
+        // ensures tag count is updated
+        if (isNewFromFile) {
+            TagStats.countTags(tags, false);
+        }
     }
 
     // Getters
     public String getOrientation() { return this.orientation; };
-    public ArrayList<String> getTags() { return this.tags; };
+    public HashSet<String> getTags() { return this.tags; };
     public double getImportance() { return this.importance; };
 
     // Setters
@@ -32,25 +34,21 @@ public class Photo {
         };
         this.orientation = newOrientation;
     };
-    public void setTags(ArrayList<String> newTags) {
+    public void setTags(HashSet<String> newTags) {
         if (newTags != null) { this.tags = newTags; }
     }
 
     // Methods
-    public void concatenateTags(ArrayList<String> newTags) {
+    public void concatenateTags(HashSet<String> newTags) {
         // merges 2 photos sets of tags - for use with merging V photos
         if (newTags != null) {
-            for (String tag : newTags) {
-                if (!this.tags.contains(tag)) {
-                    this.tags.add(tag);
-                };
-            }
+            this.tags.addAll(newTags);
         }
     }
 
     public void sumPhotoImportance() {
         for (String tag : this.tags) {
-            this.importance += Util.getTagWeights().get(tag);
+            this.importance += TagStats.getTagWeights().get(tag);
         }
     }
 
@@ -58,11 +56,8 @@ public class Photo {
         // returns the amount of tags that are shared between 2 photos
         int count = 0;
 
-        HashSet<String> set1 = new HashSet<>(this.tags);
-        HashSet<String> set2 = new HashSet<>(photo2.tags);
-
-        HashSet<String> smaller = set1.size() < set2.size() ? set1 : set2;
-        HashSet<String> larger = (smaller == set1) ? set2 : set1;
+        HashSet<String> smaller = this.tags.size() < photo2.tags.size() ? this.tags : photo2.tags;
+        HashSet<String> larger = (smaller == this.tags) ? photo2.tags : this.tags;
 
         for (String tag : smaller) {
             if (larger.contains(tag)) {
@@ -77,8 +72,8 @@ public class Photo {
         
         int lIndex = 0;
         int rIndex = photos.size()-1;
-        Util.sortPhotosByImportance(photos);
-        photos = Util.pairRelevantPhotos(photos, 100);
+        
+        Slideshow.sortPhotosByImportance(photos);
 
         ArrayList<Photo> sortedPhotos = new ArrayList<>();
 
@@ -89,9 +84,9 @@ public class Photo {
             }
 
             if (photos.get(lIndex).getOrientation().equals(photos.get(rIndex).getOrientation()) 
-                && photos.get(lIndex).orientation.equals("V")) {
+                && photos.get(lIndex).getOrientation().equals("V")) {
                 
-                Photo newVVPhoto = new Photo(photos.get(lIndex).getTags(), "VV");
+                Photo newVVPhoto = new Photo(new ArrayList<>(photos.get(lIndex).getTags()), "VV", false);
                 newVVPhoto.concatenateTags(photos.get(rIndex).getTags());
 
                 sortedPhotos.add(newVVPhoto);
@@ -102,11 +97,11 @@ public class Photo {
                 continue;
             }
 
-            if (photos.get(lIndex).orientation.equals("H")) {
+            if (photos.get(lIndex).getOrientation().equals("H")) {
                 sortedPhotos.add(photos.get(lIndex));
                 lIndex++;
             }
-            if (photos.get(rIndex).orientation.equals("H")) {
+            if (photos.get(rIndex).getOrientation().equals("H")) {
                 sortedPhotos.add(photos.get(rIndex));
                 rIndex--;
             }
